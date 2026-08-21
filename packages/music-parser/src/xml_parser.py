@@ -1,6 +1,7 @@
 """
 MusicXML Parser & Extractor using music21
-Extracts metadata, voices/parts, notes with precise onset/offset seconds and French solfège notation.
+Extracts metadata, SATB choir voices (Soprano, Alto, Ténor, Basse),
+notes with precise onset/offset seconds and French solfège notation.
 """
 import logging
 from typing import Dict, List, Any, Optional
@@ -28,6 +29,8 @@ ACCIDENTAL_MAP = {
     None: ""
 }
 
+SATB_VOICE_NAMES = ["Soprano", "Alto", "Ténor", "Basse"]
+
 
 def pitch_to_solfege_fr(pitch_obj: m21.pitch.Pitch) -> str:
     """Convertit un Pitch music21 (ex: F#4) en solfège français (Fa#4)."""
@@ -39,7 +42,7 @@ def pitch_to_solfege_fr(pitch_obj: m21.pitch.Pitch) -> str:
 
 
 class MusicScoreParser:
-    """Analyse un fichier MusicXML et extrait sa structure fine pour la base de données et le player."""
+    """Analyse un fichier MusicXML et extrait la structure polyphonique SATB fine."""
 
     def __init__(self, xml_path: str):
         self.xml_path = Path(xml_path)
@@ -86,12 +89,7 @@ class MusicScoreParser:
 
     def extract_parts_and_notes(self) -> List[Dict[str, Any]]:
         """
-        Extrait toutes les portées/parties ainsi que chaque note avec :
-        - Hauteur (pitch anglo-saxon ex: C4, et français ex: Do4)
-        - Numéro de mesure
-        - Durée en temps (quarterLength)
-        - Timestamp de début et de fin en secondes (start_time_seconds, end_time_seconds)
-        - Gestion des silences (is_rest)
+        Extrait toutes les voix SATB ainsi que chaque note unitaire.
         """
         meta = self.get_metadata()
         tempo = meta["tempo"]
@@ -100,10 +98,10 @@ class MusicScoreParser:
         parts_data = []
 
         for idx, part in enumerate(self.score.parts):
-            part_name = part.partName or f"Voix {idx + 1}"
+            default_satb_name = SATB_VOICE_NAMES[idx] if idx < len(SATB_VOICE_NAMES) else f"Voix {idx + 1}"
+            part_name = part.partName or default_satb_name
             
-            # Détection d'instrument / MIDI program
-            midi_prog = 1 # Grand Piano par défaut
+            midi_prog = 53 # Choir Aahs / Vocal par défaut
             inst = part.getInstrument()
             if inst and inst.midiProgram is not None:
                 midi_prog = inst.midiProgram
@@ -130,7 +128,6 @@ class MusicScoreParser:
                         "is_rest": True
                     })
                 elif el.isChord:
-                    # En cas d'accord, on peut sérialiser la note principale ou décomposer
                     for pitch_in_chord in el.pitches:
                         notes_list.append({
                             "measure_number": measure_num,
@@ -142,7 +139,6 @@ class MusicScoreParser:
                             "is_rest": False
                         })
                 else:
-                    # Note individuelle
                     notes_list.append({
                         "measure_number": measure_num,
                         "pitch": el.pitch.nameWithOctave,
@@ -155,7 +151,8 @@ class MusicScoreParser:
 
             parts_data.append({
                 "name": part_name,
-                "instrument": inst.instrumentName if inst else "Piano",
+                "type": SATB_VOICE_NAMES[idx].lower() if idx < len(SATB_VOICE_NAMES) else "part",
+                "instrument": "Chœur Vocal",
                 "midi_program": midi_prog,
                 "order_index": idx,
                 "notes": notes_list

@@ -17,10 +17,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   const navigation = [
-    { name: "Tableau de bord", href: "/", icon: Layers },
+    { name: "Tableau de bord", href: "/dashboard", icon: Layers },
     { name: "Importer une partition", href: "/upload", icon: UploadCloud },
-    { name: "Bibliothèque", href: "/#library", icon: Music },
-    { name: "Studio d'écoute", href: "/scores/demo-score", icon: Headphones },
+    { name: "Studio d'écoute SATB", href: "/scores/demo-score", icon: Headphones },
   ];
 
   return (
