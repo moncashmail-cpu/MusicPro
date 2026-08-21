@@ -7,21 +7,15 @@ import {
   FileText, 
   CheckCircle, 
   Loader2, 
-  ArrowRight, 
   Sparkles,
-  Layers,
-  Music,
-  AlertCircle,
-  Zap,
-  ShieldCheck
+  ShieldCheck,
+  Zap
 } from "lucide-react";
 import { ScoreManager } from "@/lib/scoreManager";
 
 export default function UploadPage() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState<string>("");
-  const [composer, setComposer] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
@@ -33,23 +27,21 @@ export default function UploadPage() {
     { name: "Calcul des Timestamps & Karaoké", desc: "Alignement temporel précis pour le surlignage note à note" },
   ];
 
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!file) return;
-
+  const handleFileUpload = async (selectedFile: File) => {
+    setFile(selectedFile);
     setIsProcessing(true);
     let newScoreId = "demo-score";
 
     try {
-      const generatedTitle = title || file.name.replace(/\.[^/.]+$/, "");
-      const generatedComposer = composer || "Compositeur";
+      const generatedTitle = selectedFile.name.replace(/\.[^/.]+$/, "");
+      const generatedComposer = "Partition Choral SATB";
 
       for (let s = 1; s <= 4; s++) {
         setCurrentStep(s);
         await new Promise((r) => setTimeout(r, 600));
       }
 
-      const created = await ScoreManager.uploadAndProcessScore(file, generatedTitle, generatedComposer);
+      const created = await ScoreManager.uploadAndProcessScore(selectedFile, generatedTitle, generatedComposer);
       newScoreId = created.id;
       setCurrentStep(5);
       await new Promise((r) => setTimeout(r, 400));
@@ -65,91 +57,44 @@ export default function UploadPage() {
       <div>
         <h1 className="text-2xl font-extrabold text-white tracking-tight">Importer et Numériser une Partition</h1>
         <p className="text-xs text-gray-400 mt-1 font-mono">
-          Pipeline OMR & Synthèse SATB : Image/PDF $\rightarrow$ MusicXML $\rightarrow$ 4 Voix Séparées $\rightarrow$ Studio.
+          Déposez simplement votre partition. L'OMR et l'extraction SATB sont entièrement automatiques.
         </p>
       </div>
 
       {!isProcessing ? (
-        <form onSubmit={handleUpload} className="space-y-6">
-          {/* File Dropzone */}
-          <div className="border-2 border-dashed border-border-strong hover:border-accent rounded-3xl p-10 bg-surface-100/80 text-center space-y-4 transition-all group relative cursor-pointer backdrop-blur-xl">
-            <input
-              type="file"
-              required
-              accept=".pdf,.png,.jpg,.jpeg"
-              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  const selected = e.target.files[0];
-                  setFile(selected);
-                  if (!title) setTitle(selected.name.replace(/\.[^/.]+$/, ""));
-                }
-              }}
-            />
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-surface-50 border border-border-subtle flex items-center justify-center text-accent group-hover:scale-110 group-hover:shadow-glow-accent transition-all">
-              <UploadCloud className="w-8 h-8" />
-            </div>
-            <div>
-              <p className="text-base font-bold text-white">
-                {file ? file.name : "Glissez votre partition ici ou "}
-                <span className="text-accent underline">{file ? "(Changer de fichier)" : "parcourez vos fichiers"}</span>
-              </p>
-              <p className="text-xs text-gray-500 font-mono mt-1">
-                Formats acceptés : PDF, PNG, JPG (CamScanner ou partitions chorales SATB)
-              </p>
-            </div>
-
-            {file && (
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent/20 border border-accent/40 text-white text-xs font-mono">
-                <FileText className="w-4 h-4 text-accent" />
-                <span>{file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
-              </div>
-            )}
+        <div className="border-2 border-dashed border-border-strong hover:border-accent rounded-3xl p-12 md:p-16 bg-surface-100/80 text-center space-y-5 transition-all group relative cursor-pointer backdrop-blur-xl shadow-card">
+          <input
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg"
+            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                handleFileUpload(e.target.files[0]);
+              }
+            }}
+          />
+          <div className="w-20 h-20 mx-auto rounded-3xl bg-surface-50 border border-border-subtle flex items-center justify-center text-accent group-hover:scale-110 group-hover:shadow-glow-accent transition-all">
+            <UploadCloud className="w-10 h-10" />
           </div>
-
-          {/* Metadata Form */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-surface-100 p-6 rounded-3xl border border-border-subtle backdrop-blur-xl">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-300">Titre de l'œuvre</label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Ex: L'Aube Nouvelle ou Hymne"
-                className="w-full bg-surface-50 border border-border-subtle rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-300">Compositeur / Arrangeur</label>
-              <input
-                type="text"
-                value={composer}
-                onChange={(e) => setComposer(e.target.value)}
-                placeholder="Ex: Abbé Gilbert DAGNON"
-                className="w-full bg-surface-50 border border-border-subtle rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent"
-              />
-            </div>
+          <div className="space-y-1">
+            <p className="text-lg font-extrabold text-white">
+              Glissez-déposez votre partition ici
+            </p>
+            <p className="text-sm text-accent underline font-semibold">
+              ou parcourez vos fichiers
+            </p>
+            <p className="text-xs text-gray-500 font-mono pt-2">
+              Formats acceptés : PDF, PNG, JPG (Qualité CamScanner ou partition imprimée)
+            </p>
           </div>
-
-          {/* Submit Action */}
-          <button
-            type="submit"
-            disabled={!file}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-accent via-indigo-600 to-cyan-neon hover:opacity-95 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-glow-accent btn-magnetic disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Zap className="w-4 h-4" />
-            <span>Lancer la Numérisation OMR & la Synthèse SATB</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
+        </div>
       ) : (
         /* Real-time Pipeline Progress Tracker */
         <div className="bg-surface-100 rounded-3xl border border-accent/40 p-8 shadow-card space-y-6 backdrop-blur-xl animate-pulse-slow">
           <div className="flex items-center justify-between border-b border-border-subtle pb-4">
             <div>
-              <h3 className="text-base font-bold text-white tracking-tight">{title || "Partition en cours"}</h3>
-              <p className="text-xs text-gray-400 font-mono">{composer || "Analyse OMR"} • Pipeline en cours d'exécution...</p>
+              <h3 className="text-base font-bold text-white tracking-tight">{file?.name || "Partition"}</h3>
+              <p className="text-xs text-gray-400 font-mono">Analyse OMR & Synthèse SATB en cours d'exécution...</p>
             </div>
             <div className="flex items-center gap-2 text-accent text-xs font-mono font-bold bg-accent/15 px-3 py-1.5 rounded-xl border border-accent/30">
               <Loader2 className="w-4 h-4 animate-spin" />
