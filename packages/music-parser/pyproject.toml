@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "music-parser"
+version = "0.1.0"
+description = "Parseur et extracteur musical basé sur music21 (voix, notes, solfège, timestamps)"
+dependencies = [
+    "music21>=9.1.0",
+    "pydantic>=2.0.0"
+]

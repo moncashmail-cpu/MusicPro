@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omr-engine"
+version = "0.1.0"
+description = "Wrapper pour moteurs OMR (Audiveris, Oemer) et conversion image/PDF vers MusicXML"
+dependencies = [
+    "pydantic>=2.0.0"
+]

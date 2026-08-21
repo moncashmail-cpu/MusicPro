@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-jetbrains-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0A0D14;
+  color: #F1F3F5;
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0D14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F2432;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2B3245;
+}
+
+/* Background Noise Texture */
+.bg-noise {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(22, 25, 34, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-dropdown {
+  background: rgba(18, 20, 28, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* OSMD Music Sheet Container Custom Styles */
+#osmdCanvasContainer {
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  padding: 16px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+#osmdCanvasContainer svg {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Note highlight dynamic animation */
+.highlighted-note {
+  fill: #6366F1 !important;
+  stroke: #6366F1 !important;
+  filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.8));
+  transition: all 0.15s ease-out;
+}
+
+/* Button Micro-interactions */
+.btn-magnetic {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s ease;
+}
+.btn-magnetic:hover {
+  transform: translateY(-1px) scale(1.01);
+}
+.btn-magnetic:active {
+  transform: translateY(1px) scale(0.99);
+}

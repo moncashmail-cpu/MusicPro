@@ -1,0 +1,23 @@
+{
+  "name": "musikpro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plateforme OMR & Synthèse Audio - Reconnaissance de partitions, séparation des voix, synthèse audio et lecture assistée",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "shared/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "npm@11.10.0"
+}
