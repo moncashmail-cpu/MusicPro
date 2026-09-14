@@ -260,6 +260,34 @@ function PricingContent() {
         </button>
       </div>
 
+      {/* Test 1 FCFA Banner */}
+      <div className="rounded-3xl bg-gradient-to-r from-emerald-950/40 via-surface-100 to-emerald-950/40 border border-emerald-500/40 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-glow-accent">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shrink-0">
+            <Zap className="w-6 h-6 animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="text-base font-black text-white">🧪 Mode Test de Paiement Réel (1 FCFA)</h4>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-black text-[10px] font-mono font-black uppercase">
+                TEST DIRECT 1 FCFA
+              </span>
+            </div>
+            <p className="text-xs text-emerald-300 font-mono mt-0.5">
+              Tester le flux de paiement réel (MTN MoMo, Moov Flooz, Wave, Orange Money, Carte) pour seulement 1 FCFA.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setSelectedPlanForCheckout(PRICING_PLANS.test_1f)}
+          className="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs shrink-0 transition-all shadow-glow-accent btn-magnetic flex items-center gap-2"
+        >
+          <Zap className="w-4 h-4 fill-black" />
+          <span>Tester le Paiement à 1 FCFA</span>
+        </button>
+      </div>
+
       {/* FAQ Section */}
       <div className="max-w-3xl mx-auto space-y-6 pt-8">
         <div className="text-center space-y-2">
