@@ -14,12 +14,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "L'adresse email du client est requise" }, { status: 400 });
     }
 
+    const origin = request.headers.get("origin") || request.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const computedReturnUrl = returnUrl || `${origin}/pricing?status=success`;
+
     const result = await PaymentService.initializePayment({
       planId,
       customer,
       gateway: gateway || "moneroo",
       operator,
-      returnUrl,
+      returnUrl: computedReturnUrl,
     });
 
     return NextResponse.json(result);
