@@ -20,6 +20,7 @@ export function Sidebar() {
     { name: "Tableau de bord", href: "/dashboard", icon: Layers },
     { name: "Importer une partition", href: "/upload", icon: UploadCloud },
     { name: "Studio d'écoute SATB", href: "/scores/demo-score", icon: Headphones },
+    { name: "Tarifs & Abonnements", href: "/pricing", icon: Sparkles },
   ];
 
   return (
@@ -62,6 +63,27 @@ export function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Pro Upgrade Box */}
+        <div className="pt-4">
+          <Link
+            href="/pricing"
+            className="block p-3.5 rounded-2xl bg-gradient-to-b from-accent/20 to-surface-100 border border-accent/30 hover:border-accent shadow-glow-accent transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" />
+                Passer Choriste Pro
+              </span>
+              <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                MoMo
+              </span>
+            </div>
+            <p className="text-[11px] text-gray-300 mt-1">
+              SATB 4 voix illimité & Rendu FluidSynth .sf2
+            </p>
+          </Link>
+        </div>
 
         <div className="pt-6 px-3 pb-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider font-mono">
           Outils & Assistance

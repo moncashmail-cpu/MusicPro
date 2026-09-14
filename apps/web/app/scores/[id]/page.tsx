@@ -29,10 +29,10 @@ export default function ScoreStudioPage() {
   const params = useParams();
   const scoreId = (params?.id as string) || "demo-score";
 
-  const [activeScore, setActiveScore] = useState<any>(null);
+  const [activeScore, setActiveScore] = useState<DynamicScore | null>(null);
 
   // Exact 140 BPM Timings : 1 beat = 0.4285s | 1/2 beat (croche) = 0.214s | 1/4 beat = 0.107s
-  const defaultScoreData = {
+  const defaultScoreData: DynamicScore = {
     id: "demo-score",
     title: "L'AUBE NOUVELLE (Hymne national du Bénin)",
     composer: "Abbé Gilbert DAGNON • Harm. G. J. L. SOWADAN (17 mai 1994)",
@@ -48,7 +48,7 @@ export default function ScoreStudioPage() {
     ],
     notes: [
       // Soprano 140 BPM
-      { id: "s1", part_id: "part-soprano", measure_number: 1, pitch: "D4", solfege_name_fr: "Ré4", lyric: "En-", duration_beats: 0.5, start_time_seconds: 0.0, end_time_seconds: 0.21, is_rest: false, stem: 'up' },
+      { id: "s1", part_id: "part-soprano", measure_number: 1, pitch: "D4", solfege_name_fr: "Ré4", lyric: "En-", duration_beats: 0.5, start_time_seconds: 0.0, end_time_seconds: 0.21, is_rest: false, stem: 'up' as const },
       { id: "s2", part_id: "part-soprano", measure_number: 1, pitch: "D4", solfege_name_fr: "Ré4", lyric: "fants", duration_beats: 0.5, start_time_seconds: 0.21, end_time_seconds: 0.43, is_rest: false, stem: 'up' },
       { id: "s3", part_id: "part-soprano", measure_number: 1, pitch: "G4", solfege_name_fr: "Sol4", lyric: "du", duration_beats: 1, start_time_seconds: 0.43, end_time_seconds: 0.86, is_rest: false, stem: 'up' },
       { id: "s4", part_id: "part-soprano", measure_number: 2, pitch: "B4", solfege_name_fr: "Si4", lyric: "Bé-", duration_beats: 1, start_time_seconds: 0.86, end_time_seconds: 1.28, is_rest: false, stem: 'up' },
@@ -177,15 +177,16 @@ export default function ScoreStudioPage() {
               nextTime = audio.currentTime;
             } else if (audioMode === 'satb_synth') {
               // Trigger notes in SATB synthesis engine
-              scoreData.notes.forEach((note) => {
+              scoreData.notes.forEach((note: NoteItem) => {
                 if (
+                  note.id &&
                   !note.is_rest &&
                   !playedNotesRef.current.has(note.id) &&
                   prevTime <= note.start_time_seconds &&
                   nextTime >= note.start_time_seconds
                 ) {
                   if (activePartId === null || activePartId === note.part_id) {
-                    const voiceType = note.part_id.replace("part-", "");
+                    const voiceType = (note.part_id || "").replace("part-", "");
                     const dur = (note.end_time_seconds - note.start_time_seconds) / tempoMultiplier;
                     scoreAudioPlayer.playNote(note.pitch, dur, voiceType);
                   }
@@ -237,8 +238,8 @@ export default function ScoreStudioPage() {
     }
     playedNotesRef.current = new Set(
       scoreData.notes
-        .filter((n) => n.start_time_seconds < time)
-        .map((n) => n.id)
+        .filter((n) => n.start_time_seconds < time && n.id)
+        .map((n) => n.id as string)
     );
   };
 

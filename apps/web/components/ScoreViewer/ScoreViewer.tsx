@@ -14,7 +14,7 @@ export interface NoteItem {
   solfege_name_fr?: string;
   lyric?: string; // Syllabe de chant (ex: "En-", "fants", "du", "Bé-", "nin")
   is_rest: boolean;
-  stem?: 'up' | 'down';
+  stem?: 'up' | 'down' | string;
 }
 
 interface ScoreViewerProps {

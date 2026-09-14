@@ -33,6 +33,10 @@ export function LandingNavbar() {
           <a href="#satb-preview" className="hover:text-white transition-colors">
             Quatuor SATB
           </a>
+          <Link href="/pricing" className="text-accent hover:text-white transition-colors flex items-center gap-1 font-bold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Tarifs & MoMo</span>
+          </Link>
           <a href="#faq" className="hover:text-white transition-colors">
             FAQ
           </a>
